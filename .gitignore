@@ -1,0 +1,37 @@
+# Ignore data files
+data/*.db
+data/*.csv
+data/*.json
+
+# Ignore IDE and editor files
+.vscode/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*.ipynb*
+
+# Ignore Python virtual environments
+venv/
+env/
+.venv/
+env/
+ENV/
+
+# Ignore conda environment files (optional, if you don't want to track them)
+conda-env.yml
+environment.yml
+
+# Ignore OS generated files
+.Spotlight-V100
+.Trashes
+
+# Ignore logs and outputs
+logs/
+output/
+results/
