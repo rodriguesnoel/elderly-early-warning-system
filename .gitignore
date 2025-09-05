@@ -23,6 +23,8 @@ env/
 env/
 ENV/
 
+
+
 # Ignore conda environment files (optional, if you don't want to track them)
 conda-env.yml
 environment.yml
@@ -35,3 +37,17 @@ environment.yml
 logs/
 output/
 results/
+
+
+__pycache__
+*.pyc
+.DS_Store
+.env
+.env.local
+.vscode/
+node_modules/
+artifacts/model.pkl
+artifacts/model_features.pkl
+artifacts/label_encoder.pkl
+artifacts/feature_importance.json
+.gitignore
