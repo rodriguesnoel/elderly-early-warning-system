@@ -48,9 +48,10 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(
         X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
     )
+    print("Final feature columns:", X_train.columns.tolist())
 
     # 6. Train models
-    print("Training models...")
+    print("🤖 Training models...")
     trained_models = train_models(X_train, y_train)
     model = trained_models['LightGBM']
     print("   → LightGBM selected as best model")
@@ -61,7 +62,7 @@ def main():
 
     print("Saving artifacts to 'artifacts/'...")
     joblib.dump(model, artifacts_dir / 'model.pkl')
-    joblib.dump(X_train.columns.tolist(), artifacts_dir / 'model_features.pkl')  # Critical!
+    joblib.dump(X_train.columns.tolist(), artifacts_dir / 'model_features.pkl')
     joblib.dump(le, artifacts_dir / 'label_encoder.pkl')
 
     print(f"""
