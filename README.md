@@ -30,13 +30,13 @@ The solution combines machine learning with user-friendly design to support proa
 - **Feature Importance Chart**: Shows which sensors most influenced the prediction
 - **Class Distribution Pie Chart**: Displays typical activity patterns across residents
 
-![System Interface](images/screenshot01.png)  
+![System Interface](images/screenshot01.jpg)  
 *User-friendly form with descriptive dropdowns for easy input*
 
-![Prediction Results](images/screenshot02.png)  
+![Prediction Results](images/screenshot02.jpg)  
 *Clear action guidance and feature importance visualization*
 
-![Charts](images/screenshot03.png)  
+![Charts](images/screenshot03.jpg)  
 *Interactive charts showing what influenced the prediction and common activity levels*
 
 
@@ -72,9 +72,9 @@ The solution combines machine learning with user-friendly design to support proa
 - train_pipelines.py
 - app.py
 - images/
-    - screenshot01.png
-    - screenshot02.png
-    - screenshot03.png
+    - screenshot01.jpg
+    - screenshot02.jpg
+    - screenshot03.jpg
 
 ## **4. PIPELINE FLOW**
 
@@ -326,6 +326,8 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 sqlalchemy>=2.0.0
 jupyter>=1.0.0
+Flask>=2.3.0
+gunicorn==21.2.0
 ```
 
 These packages support:
