@@ -1,0 +1,22 @@
+{
+  "CO2_ElectroChemicalSensor": 1226,
+  "MetalOxideSensor_Unit4": 1117,
+  "CO2_InfraredSensor": 1088,
+  "Temperature": 1076,
+  "MetalOxideSensor_Unit1": 1019,
+  "Humidity": 964,
+  "MetalOxideSensor_Unit2": 923,
+  "MetalOxideSensor_Unit3": 780,
+  "CO_GasSensor_clean_encoded": 181,
+  "Ambient Light Level_very bright": 99,
+  "HVAC_clean_ventilation only": 85,
+  "HVAC_clean_off": 74,
+  "Ambient Light Level_unknown": 66,
+  "HVAC_clean_eco mode": 60,
+  "HVAC_clean_maintenance mode": 59,
+  "HVAC_clean_heating active": 57,
+  "MetalOxideSensor_Unit3_was_missing": 47,
+  "Ambient Light Level_moderate": 40,
+  "Ambient Light Level_dim": 30,
+  "Ambient Light Level_very dim": 9
+}
