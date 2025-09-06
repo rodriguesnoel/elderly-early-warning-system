@@ -326,6 +326,8 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 sqlalchemy>=2.0.0
 jupyter>=1.0.0
+Flask>=2.3.0
+gunicorn==21.2.0
 ```
 
 These packages support:
