@@ -72,9 +72,9 @@ The solution combines machine learning with user-friendly design to support proa
 - train_pipelines.py
 - app.py
 - images/
-    - screenshot01.png
-    - screenshot02.png
-    - screenshot03.png
+    - screenshot01.jpg
+    - screenshot02.jpg
+    - screenshot03.jpg
 
 ## **4. PIPELINE FLOW**
 
