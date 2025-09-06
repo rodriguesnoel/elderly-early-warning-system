@@ -30,13 +30,13 @@ The solution combines machine learning with user-friendly design to support proa
 - **Feature Importance Chart**: Shows which sensors most influenced the prediction
 - **Class Distribution Pie Chart**: Displays typical activity patterns across residents
 
-![System Interface](images/screenshot1.png)  
+![System Interface](images/screenshot01.png)  
 *User-friendly form with descriptive dropdowns for easy input*
 
-![Prediction Results](images/screenshot2.png)  
+![Prediction Results](images/screenshot02.png)  
 *Clear action guidance and feature importance visualization*
 
-![Charts](images/screenshot3.png)  
+![Charts](images/screenshot03.png)  
 *Interactive charts showing what influenced the prediction and common activity levels*
 
 
