@@ -4,30 +4,79 @@
 **NRIC:** 991H  
 **Email:** noel.mr@gmail.com
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live-Green?style=for-the-badge&logo=heroku)](https://web-production-a1c35.up.railway.app)  
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/rodriguesnoel/elderly-early-warning-system)
+
+
 ## **1. PROJECT OVERVIEW**
 
-This project aims to develop a non-invasive early warning system that predicts the activity level of elderly residents living independently, based on environmental sensor data from smart homes. The goal is to detect potential health emergencies or concerning situations—such as sudden high activity or prolonged inactivity—by analyzing patterns in temperature, humidity, gas levels, lighting, and HVAC usage.
+This project develops a non-invasive early warning system that predicts the activity level of elderly residents using environmental sensor data from smart homes. By analysing patterns in temperature, humidity, gas levels, lighting, and HVAC usage, the system detects potential health emergencies or concerning situations such as sudden high activity or prolonged inactivity.
 
-By leveraging machine learning, this system supports proactive care coordination while respecting privacy and minimizing false alarms.
+The solution combines machine learning with user-friendly design to support proactive care coordination while respecting privacy and minimiSing false alarms.
 
 
-## **2. FOLDER STRUCTURE**
+## **2. KEY FEATURES**
+
+### Real-time Prediction
+- Predicts resident activity level (Low, Moderate, High) based on current sensor readings
+- Provides confidence scores for each prediction
+
+### Actionable Guidance
+- Contextual recommendations based on both prediction and environmental risks
+- Clear instructions for caregivers with priority actions
+- Immediate alerts for environmental hazards (e.g., dangerously cold temperatures)
+
+### Interactive Visualizations
+- **Feature Importance Chart**: Shows which sensors most influenced the prediction
+- **Class Distribution Pie Chart**: Displays typical activity patterns across residents
+
+![System Interface](images/screenshot1.png)  
+*User-friendly form with descriptive dropdowns for easy input*
+
+![Prediction Results](images/screenshot2.png)  
+*Clear action guidance and feature importance visualization*
+
+![Charts](images/screenshot3.png)  
+*Interactive charts showing what influenced the prediction and common activity levels*
+
+
+## **3. FOLDER STRUCTURE**
 
 - data/
-    - gas_monitoring.db (not committed)
+    - gas_monitoring.db
 - src/
-    - data_loader.py              # Loads data from SQLite database
-    - preprocessing.py            # Cleans data, handles missing values and outliers
-    - feature_engineer.py         # Encodes categorical variables and prepares features
-    - model_trainer.py            # Trains multiple classification models
-    - model_evaluator.py          # Evaluates models with metrics and visualizations
+    - __init_py
+    - data_loader.py
+    - preprocessing.py
+    - feature_engineer.py
+    - model_trainer.py
+    - model_evaluator.py
 - eda.ipynb
 - requirements.txt
 - run.sh
 - README.md
+- artifacts/
+    - feature_importance.json
+    - label_encoder.pkl
+    - model_features.pkl
+    - model.pkl
+- Procfile
+- Dockerfile
+- templates/
+    - index.html
+- static/
+    - css/
+      - styles.css
+    - js/
+      - app.js
+- train_pipelines.py
+- app.py
+- images/
+    - screenshot01.png
+    - screenshot02.png
+    - screenshot03.png
 
-
-## **3. PIPELINE FLOW**
+## **4. PIPELINE FLOW**
 
 The pipeline consists of the following modular steps:
 
@@ -52,7 +101,7 @@ The pipeline consists of the following modular steps:
 This modular design ensures the pipeline is reusable, readable, and easy to modify for future experiments.
 
 
-## **4. KEY EDA FINDINGS & THEIR IMPACT ON THE PIPELINE**
+## **5. KEY EDA FINDINGS & THEIR IMPACT ON THE PIPELINE**
 
 ### Dataset Overview
 - 10,000 rows, 14 features (mix of numerical and categorical). Contains sensor readings such as:
@@ -64,7 +113,6 @@ This modular design ensures the pipeline is reusable, readable, and easy to modi
     - Ambient light levels
     - Activity classifications
 - Target variable: `Activity Level` with classes: `Low Activity`, `Moderate Activity`, `High Activity`
-
 
 ### Major Findings
 - **Class Imbalance**:  
@@ -98,7 +146,7 @@ This modular design ensures the pipeline is reusable, readable, and easy to modi
 These findings directly informed our preprocessing and modeling decisions, ensuring robustness and real-world applicability.
 
 
-## **5. FEATURE PROCESSING SUMMARY**
+## **6. FEATURE PROCESSING SUMMARY**
 
 The following table summarizes how each feature was processed in the pipeline based on EDA findings.
 
@@ -117,7 +165,7 @@ The following table summarizes how each feature was processed in the pipeline ba
 | Time of Day | Categorical | None | No | Dropped | Not used in final model to avoid overfitting to time patterns |
 
 
-## **6. MODEL CHOICE & EXPLANATION**
+## **7. MODEL CHOICE & EXPLANATION**
 
 Three classification models were selected based on their suitability for this imbalanced, mixed-feature dataset and the need for both performance and interpretability in a healthcare context.
 
@@ -144,7 +192,7 @@ Three classification models were selected based on their suitability for this im
 All models use `class_weight='balanced'` to address the class imbalance, ensuring that the minority class (`High Activity`) is not overlooked during training.
 
 
-## **7. MODEL EVALUATION & METRICS**
+## **8. MODEL EVALUATION & METRICS**
 
 All models were evaluated using the following metrics to ensure robust performance, especially on the minority class (`High Activity`):
 
@@ -167,7 +215,7 @@ When running `model_evaluator.py`, you’ll see:
 This evaluation strategy ensures the selected model is both accurate and reliable for real-world deployment.
 
 
-## **8. OTHER CONSIDERATIONS FOR DEPLOYMENT**
+## **9. OTHER CONSIDERATIONS FOR DEPLOYMENT**
 
 When deploying this early warning system in real-world settings, several critical factors must be considered to ensure safety, usability, and trust.
 
@@ -204,7 +252,7 @@ When deploying this early warning system in real-world settings, several critica
 These considerations ensure that the model not only performs well technically but also aligns with ethical, practical, and operational requirements for deployment in elderly care environments.
 
 
-## **9. RESULTS**
+## **10. RESULTS**
 
 The three models were evaluated using **macro F1-score**, which gives equal weight to all classes — critical for detecting rare but important events like `High Activity`.
 
@@ -227,8 +275,20 @@ This makes LightGBM the most suitable model for deployment in an early warning s
 - **LightGBM** leveraged boosting to correct errors and better capture patterns in sensor data.
 
 
+## **11. Deployment & Security**
 
-## **10. HOW TO RUN PIPELINE**
+### Privacy by Design
+- Uses only environmental sensor data (temperature, humidity, CO₂, etc.)
+- No cameras, audio, or personal health records collected
+- All data processed locally or securely on server
+
+### Production Environment
+- Deployed on Railway with Docker containerization
+- Uses `gunicorn` WSGI server for production stability
+- Includes proper error handling and logging
+
+
+## **12. HOW TO RUN PIPELINE**
 
 The pipeline is automated via a bash script and can be executed end-to-end with a single command.
 
@@ -241,25 +301,20 @@ The pipeline is automated via a bash script and can be executed end-to-end with 
 
 **i) Clone the repository**
    ```bash
-   git clone https://github.com/rodriguesnoel/aiap21-rodrigues-noel-mark-991H.git
-   cd aiap21-rodrigues-noel-mark-991H
+   git clone https://github.com/rodriguesnoel/elderly-early-warning-system.git
+  cd elderly-early-warning-system
 ```      
-**ii) Set up the data folder**
-   ```bash
-    mkdir -p data
-    curl -o data/gas_monitoring.db https://techassessment.blob.core.windows.net/aiap21-assessment-data/gas_monitoring.db
-```
-**iii) Install dependencies**
+**ii) Install dependencies**
    ```bash
     pip install -r requirements.txt
 ```
-**iv) Run the full pipeline**
+**iii) Run the full pipeline**
    ```bash
-    ./run.sh
+    python app.py
 ```
 
 
-## **11. DEPENDENCIES**
+## **13. DEPENDENCIES**
 
 All required Python packages are listed in `requirements.txt`:
 ```
@@ -276,5 +331,5 @@ jupyter>=1.0.0
 These packages support:
 - Data loading and manipulation (pandas, sqlalchemy)
 - Preprocessing and modeling (numpy, scikit-learn, lightgbm)
-- Visualization (matplotlib, seaborn)
+- Visualisation (matplotlib, seaborn)
 - Notebook development (jupyter)

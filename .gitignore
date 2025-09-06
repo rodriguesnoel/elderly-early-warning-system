@@ -20,12 +20,9 @@ Thumbs.db
 venv/
 env/
 .venv/
-env/
 ENV/
 
-
-
-# Ignore conda environment files (optional, if you don't want to track them)
+# Ignore conda environment files (optional)
 conda-env.yml
 environment.yml
 
@@ -38,16 +35,4 @@ logs/
 output/
 results/
 
-
-__pycache__
-*.pyc
-.DS_Store
-.env
-.env.local
-.vscode/
-node_modules/
-artifacts/model.pkl
-artifacts/model_features.pkl
-artifacts/label_encoder.pkl
-artifacts/feature_importance.json
-.gitignore
+# No more artifacts/ lines — we want those files!
