@@ -4,7 +4,7 @@
 **NRIC:** 991H  
 **Email:** noel.mr@gmail.com
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live-Green?style=for-the-badge&logo=heroku)](https://web-production-a1c35.up.railway.app)  
+[![Live Demo](https://img.shields.io/badge/Demo-Live_on_Google_Cloud_Run-Green?style=for-the-badge&logo=google-cloud)](https://early-warning-system-138422014111.us-central1.run.app)  
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/rodriguesnoel/elderly-early-warning-system)
 
 
@@ -277,15 +277,17 @@ This makes LightGBM the most suitable model for deployment in an early warning s
 
 ## **11. Deployment & Security**
 
+### Production Environment
+- **Deployed on**: Google Cloud Run (24/7 availability)
+- **Database**: Hostinger MySQL (external managed database)
+- **Live URL**: https://early-warning-system-138422014111.us-central1.run.app
+- **Architecture**: Users → Google Cloud Run → Hostinger MySQL
+
 ### Privacy by Design
 - Uses only environmental sensor data (temperature, humidity, CO₂, etc.)
 - No cameras, audio, or personal health records collected
-- All data processed locally or securely on server
-
-### Production Environment
-- Deployed on Railway with Docker containerization
-- Uses `gunicorn` WSGI server for production stability
-- Includes proper error handling and logging
+- All data processed securely on Google Cloud Run
+- MySQL database securely hosted on Hostinger
 
 
 ## **12. HOW TO RUN PIPELINE**
@@ -297,20 +299,12 @@ The pipeline is automated via a bash script and can be executed end-to-end with 
 - SQLite3
 - The `gas_monitoring.db` file placed in the `data/` folder
 
-### Step-by-Step Instructions
-
-**i) Clone the repository**
-   ```bash
-   git clone https://github.com/rodriguesnoel/elderly-early-warning-system.git
-  cd elderly-early-warning-system
-```      
-**ii) Install dependencies**
-   ```bash
-    pip install -r requirements.txt
-```
-**iii) Run the full pipeline**
-   ```bash
-    python app.py
+### Local Development
+```bash
+git clone https://github.com/rodriguesnoel/elderly-early-warning-system.git
+cd elderly-early-warning-system
+pip install -r requirements.txt
+python app.py
 ```
 
 
@@ -318,6 +312,8 @@ The pipeline is automated via a bash script and can be executed end-to-end with 
 
 All required Python packages are listed in `requirements.txt`:
 ```
+Flask>=2.3.0
+gunicorn==21.2.0
 pandas>=1.5.0
 numpy>=1.21.0
 scikit-learn>=1.3.0
@@ -326,8 +322,8 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 sqlalchemy>=2.0.0
 jupyter>=1.0.0
-Flask>=2.3.0
-gunicorn==21.2.0
+mysql-connector-python
+joblib>=1.2.0
 ```
 
 These packages support:
