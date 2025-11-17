@@ -1,40 +1,150 @@
-# app.py
 from flask import Flask, request, render_template, jsonify
 import joblib
 import pandas as pd
 import os
 import json
+import mysql.connector
+from datetime import datetime
 
 app = Flask(__name__)
+
+# MySQL Configuration
+app.config['MYSQL_HOST'] = 'srv1865.hstgr.io'
+app.config['MYSQL_USER'] = 'u253172392_early_warning'
+app.config['MYSQL_PASSWORD'] = 't&93UtnA'
+app.config['MYSQL_DB'] = 'u253172392_early_warning'
+app.config['MYSQL_PORT'] = 3306
+
+def get_db_connection():
+    """Create and return MySQL connection"""
+    try:
+        conn = mysql.connector.connect(
+            host=app.config['MYSQL_HOST'],
+            user=app.config['MYSQL_USER'],
+            password=app.config['MYSQL_PASSWORD'],
+            database=app.config['MYSQL_DB'],
+            port=app.config['MYSQL_PORT']
+        )
+        return conn
+    except mysql.connector.Error as e:
+        print(f"Database connection error: {e}")
+        return None
+
+def init_database():
+    """Initialize database tables if they don't exist"""
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            
+            # Create predictions table for storing new predictions
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS predictions (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    session_id VARCHAR(255),
+                    temperature FLOAT,
+                    humidity FLOAT,
+                    co2_infrared FLOAT,
+                    co2_electrochemical FLOAT,
+                    metal_oxide_sensor FLOAT,
+                    co_gas_sensor VARCHAR(50),
+                    hvac_mode VARCHAR(50),
+                    ambient_light VARCHAR(50),
+                    prediction VARCHAR(50),
+                    confidence FLOAT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            ''')
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print("✅ Database initialized successfully")
+        except mysql.connector.Error as e:
+            print(f"❌ Database initialization error: {e}")
+
+# Initialize database on startup
+init_database()
 
 # Define paths
 ARTIFACTS_DIR = 'artifacts'
 
 # Load artifacts at startup
+print("Loading ML artifacts...")
 model = joblib.load(os.path.join(ARTIFACTS_DIR, 'model.pkl'))
 expected_features = joblib.load(os.path.join(ARTIFACTS_DIR, 'model_features.pkl'))
 label_encoder = joblib.load(os.path.join(ARTIFACTS_DIR, 'label_encoder.pkl'))
 
-# Load feature importance ---
+# Load feature importance
 with open(os.path.join(ARTIFACTS_DIR, 'feature_importance.json'), 'r') as f:
     feature_importance_full = json.load(f)
 
-# Hardcoded class distribution (from training data) ---
-# In a real app, you'd save this during training. For now, example values:
+# Hardcoded class distribution (from training data)
 class_distribution = {
     'Low': 65,    # % of training data
     'Moderate': 25,
     'High': 10
 }
 
-# Optional: You can save this in train_pipeline.py later like:
-# with open('artifacts/class_distribution.json', 'w') as f:
-#     json.dump(class_distribution_dict, f, indent=2)
-
+print("✅ All artifacts loaded successfully")
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/test-db')
+def test_db():
+    """Test database connection"""
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1")
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            return jsonify({'status': '✅ Database connection successful!'})
+        else:
+            return jsonify({'status': '❌ Database connection failed!'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def log_prediction_to_db(input_data, prediction, confidence):
+    """Log prediction to MySQL database"""
+    conn = get_db_connection()
+    if not conn:
+        print("❌ Failed to connect to database for logging")
+        return
+    
+    try:
+        cursor = conn.cursor()
+        
+        # Insert prediction record
+        cursor.execute('''
+            INSERT INTO predictions 
+            (session_id, temperature, humidity, co2_infrared, co2_electrochemical, 
+             metal_oxide_sensor, co_gas_sensor, hvac_mode, ambient_light, prediction, confidence)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            input_data.get('Session ID', 'unknown'),
+            input_data.get('Temperature'),
+            input_data.get('Humidity'),
+            input_data.get('CO2_InfraredSensor'),
+            input_data.get('CO2_ElectroChemicalSensor'),
+            input_data.get('MetalOxideSensor_Unit3'),
+            input_data.get('CO_GasSensor'),
+            input_data.get('HVAC_Operation_Mode'),
+            input_data.get('Ambient_Light_Level'),
+            prediction,
+            confidence
+        ))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print("✅ Prediction logged to database successfully")
+    except Exception as e:
+        print(f"❌ Error logging prediction to database: {e}")
 
 
 @app.route('/predict', methods=['POST'])
@@ -166,22 +276,19 @@ def predict():
         proba = model.predict_proba(df).max()
         pred_label = label_encoder.inverse_transform([pred_encoded])[0]
 
-        # --- NEW: Prepare Chart Data ---
+        # === LOG PREDICTION TO MYSQL DATABASE ===
+        log_prediction_to_db(input_data, pred_label, float(proba))
 
-        # 1. Top 5 Feature Importance (global, but relevant context)
+        # Prepare response data
+        confidence_percent = round(float(proba) * 100, 1)
         top_features = [
             {"feature": k, "importance": v}
             for k, v in sorted(feature_importance_full.items(), key=lambda x: x[1], reverse=True)[:5]
         ]
-
-        # 2. Class Distribution (static from training)
         class_dist_data = [
             {"class": cls, "percentage": pct}
             for cls, pct in class_distribution.items()
         ]
-
-        # 3. Confidence as percentage
-        confidence_percent = round(float(proba) * 100, 1)
 
         return jsonify({
             'prediction': pred_label,
@@ -193,7 +300,6 @@ def predict():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))

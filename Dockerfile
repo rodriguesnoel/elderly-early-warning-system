@@ -19,8 +19,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the app
 COPY . .
 
-# Expose port (Railway sets $PORT, but this is good practice)
-EXPOSE $PORT
+# Expose port (Google Cloud Run uses 8080 by default)
+EXPOSE 8080
 
-# Run with gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "--workers", "1", "--timeout", "30", "app:app"]
+# Set environment variable for port
+ENV PORT=8080
+
+# Run with gunicorn (Google Cloud Run expects 8080)
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--timeout", "30", "app:app"]

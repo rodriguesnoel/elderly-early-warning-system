@@ -1,0 +1,4 @@
+Our MySQL Server Hostname: srv1865.hstgr.io
+MySQL Database Name: u253172392_early_warning
+MySQL Username: u253172392_early_warning
+Password: t&93UtnA
